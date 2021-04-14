@@ -1,0 +1,15 @@
+/.yarn/*
+!/.yarn/releases
+!/.yarn/plugins
+!/.yarn/sdks
+
+# Can be removed if you're not using the `"node-modules"` `nodeLinker`.
+node_modules
+
+# Swap the comments on the following lines if you don't wish to use zero-installs
+# Documentation here: https://yarnpkg.com/features/zero-installs
+!/.yarn/cache
+#/.pnp.*
+
+# e.g. npm pack artifacts
+*.tgz
