@@ -36,7 +36,7 @@ function dedent(source) {
 
 /**
  *
- * @param {{selector: string; glob: string, verbose: boolean}} argv
+ * @param {{includeCodeFrame: boolean, selector: string; glob: string, verbose: boolean}} argv
  */
 async function main(argv) {
 	const cwd = process.cwd();
@@ -99,7 +99,12 @@ async function main(argv) {
 						.join("\n")
 				);
 				const location = `${file}#${loc.start.line}:${loc.start.column}`;
-				console.log(`${location}:\n${frame}`);
+
+				if (argv.includeCodeFrame) {
+					console.log(`${location}:\n${frame}`);
+				} else {
+					console.log(`${location}`);
+				}
 			}
 		}
 
@@ -132,6 +137,11 @@ yargs(hideBin(process.argv))
 				.option("verbose", {
 					type: "boolean",
 					description: "Logs additional information",
+					default: false,
+				})
+				.option("include-code-frame", {
+					type: "boolean",
+					description: "Logs the codeframe of each query result.",
 					default: false,
 				})
 				.example('$0 "TSAsExpression"');

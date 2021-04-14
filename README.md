@@ -15,9 +15,11 @@ Positionals:
                               [string] [default: "**/*.{cjs,js,jsx,mjs,ts,tsx}"]
 
 Options:
-  --version  Show version number                                       [boolean]
-  --help     Show help                                                 [boolean]
-  --verbose  Logs additional information              [boolean] [default: false]
+  --version            Show version number                             [boolean]
+  --help               Show help                                       [boolean]
+  --verbose            Logs additional information    [boolean] [default: false]
+  --include-code-frame  Logs the codeframe of each query result.
+                                                      [boolean] [default: false]
 
 Examples:
   esquery-cli.js "TSAsExpression"
