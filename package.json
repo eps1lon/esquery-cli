@@ -1,6 +1,9 @@
 {
 	"name": "esquery-cli",
 	"version": "0.1.1",
+	"engines": {
+		"node": "^14.0.0"
+	},
 	"type": "module",
 	"bin": "./bin/esquery-cli.js",
 	"files": [],
