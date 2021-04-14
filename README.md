@@ -3,7 +3,7 @@
 ## Usage
 
 ```bash
-esquery-cli.js <selector> [glob]
+npx esquery-cli <selector> [glob]
 
 Queries files for a given AST selector based on `esquery`. Selector documentatio
 n can be found at https://github.com/estools/esquery
