@@ -80,7 +80,7 @@ async function main(argv) {
 		});
 
 		const nodes = esquery.query(parseResult.program, argv.selector);
-		if (nodes.length > 0) {
+		if (argv.verbose && nodes.length > 0) {
 			console.log(`${file} ${nodes.length} matches:`);
 		}
 		for (const node of nodes) {
