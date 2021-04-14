@@ -10,6 +10,10 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 /**
+ * @typedef {ReturnType<typeof import('esquery').query>[0]} Node
+ */
+
+/**
  * Implementation of https://github.com/dmnd/dedent supporting tabs.
  * @remarks Tabs are not supported in `dedent`: https://github.com/dmnd/dedent/issues/10
  * @param {string} source
@@ -32,6 +36,25 @@ function dedent(source) {
 			return line.replace(minIndentationRegExp, "");
 		})
 		.join("\n");
+}
+
+/**
+ * @param {string} filename
+ * @param {string} selector
+ * @param {string} cwd
+ * @returns {Promise<{ nodes: Node[], source: string }>}
+ */
+async function queryFile(filename, selector, cwd) {
+	const source = await fs.readFile(filename, { encoding: "utf-8" });
+	const parseResult = await babel.parseAsync(source, {
+		cwd,
+		filename,
+		presets: ["@babel/preset-react", "@babel/preset-typescript"],
+	});
+
+	const nodes = esquery.query(parseResult.program, selector);
+
+	return { nodes, source };
 }
 
 /**
@@ -70,16 +93,25 @@ async function main(argv) {
 		cwd,
 		ignore,
 	});
+	let didError = false;
 	let fileCount = 0;
 	for await (const file of files) {
-		const source = await fs.readFile(file, { encoding: "utf-8" });
-		const parseResult = await babel.parseAsync(source, {
-			cwd,
-			filename: file,
-			presets: ["@babel/preset-react", "@babel/preset-typescript"],
-		});
+		/**
+		 * @type {Node[]}
+		 */
+		let nodes = [];
+		let source = "";
+		try {
+			const queryResult = await queryFile(file, argv.selector, cwd);
+			nodes = queryResult.nodes;
+			source = queryResult.source;
+		} catch (error) {
+			console.error(`${file}: ${error}`);
+			// process.exitCode = 1 does not work in node14 when imported.
+			// fails with "TypeError: Cannot add property exitCode, object is not extensible"
+			didError = true;
+		}
 
-		const nodes = esquery.query(parseResult.program, argv.selector);
 		if (argv.verbose && nodes.length > 0) {
 			console.log(`${file} ${nodes.length} matches:`);
 		}
@@ -113,6 +145,10 @@ async function main(argv) {
 
 	if (argv.verbose) {
 		console.log(`Queried ${fileCount} files.`);
+	}
+
+	if (didError) {
+		process.exit(1);
 	}
 }
 
