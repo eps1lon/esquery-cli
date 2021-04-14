@@ -9,9 +9,8 @@
 		"@babel/core": "^7.13.15",
 		"@babel/preset-react": "^7.13.13",
 		"@babel/preset-typescript": "^7.13.0",
-		"dedent": "^0.7.0",
 		"esquery": "^1.4.0",
-		"fast-glob": "^3.2.5",
+		"globby": "^11.0.3",
 		"yargs": "^16.2.0"
 	},
 	"repository": {

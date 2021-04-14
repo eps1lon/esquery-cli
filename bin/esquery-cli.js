@@ -2,7 +2,7 @@
 import { codeFrameColumns } from "@babel/code-frame";
 import babel from "@babel/core";
 import esquery from "esquery";
-import glob from "fast-glob";
+import glob from "globby";
 import * as fs from "fs/promises";
 import * as path from "path";
 import * as process from "process";
@@ -64,34 +64,9 @@ async function queryFile(filename, selector, cwd) {
 async function main(argv) {
 	const cwd = process.cwd();
 
-	/**
-	 * @type {string[]}
-	 */
-	const ignore = [];
-	try {
-		const gitignore = await fs.readFile(path.resolve(cwd, ".gitignore"), {
-			encoding: "utf-8",
-		});
-		ignore.push(
-			...gitignore.split(/\r?\n/).filter((fullLine) => {
-				const line = fullLine.trim();
-				if (line.length === 0) {
-					return false;
-				}
-				if (line.startsWith("#")) {
-					return false;
-				}
-
-				return true;
-			})
-		);
-	} catch {
-		// ignore if not exists
-	}
-
 	const files = await glob.stream(argv.glob, {
 		cwd,
-		ignore,
+		gitignore: true,
 	});
 	let didError = false;
 	let fileCount = 0;
